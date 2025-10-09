@@ -33,9 +33,44 @@ author: Atsushi Odagiri
 
 # 名前空間パッケージと普通のパッケージを混同する
 
-# __main__.py をカレントディレクトリに置く
+# \_\_main\_\_.py をカレントディレクトリに置く
 
-# __init__.py をカレントディレクトリに置く
+あまりおもしろくないので不採用
+
+## 3.13
+3.13では塞がってるかも
+
+```python
+>>> import __main__
+>>> __main__
+<module '__main__' from '/usr/lib/python3.13/_pyrepl/__main__.py'>
+```
+
+## 3.12
+
+```python
+>>> import __main__
+>>> __main__
+<module '__main__' (<class '_frozen_importlib.BuiltinImporter'>)>
+```
+
+## 3.11
+
+```python
+>>> import __main__
+>>> __main__
+<module '__main__' (built-in)>
+```
+
+## 3.10以前
+
+```python
+>>> import __main__
+>>> __main__
+<module '__main__' (built-in)>
+```
+
+# \_\_init\_\_.py をカレントディレクトリに置く
 
 - pytestが混乱するのでは
 
