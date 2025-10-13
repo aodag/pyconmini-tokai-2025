@@ -91,9 +91,35 @@ aspectratio: 169
 
 # 実行中にsys.pathを変更する
 
+## 同名のモジュールをimportできるか
+
 # 自身をimportする
 
-## 自身をimportしている途中でsys.moduleから削除する
+## 自身をimportしたら無限ループになる？
+
+a.py
+
+```python
+import a
+```
+
+問題なし
+
+## なぜだろう？
+
+- importはincludeとは違う
+- もうインタプリタにロードされてるモジュールを再評価しない
+- 変数に入れるだけ
+
+## import済というフラグ
+
+- sys.modules
+
+## importされてる間に例外が発生すると？
+
+- importの事実を撤回
+
+## TODO 自身をimportしている途中でsys.moduleから削除する
 
 - 無限ループできるのでは
 - 停止条件を作れたらチャーチ数を実装できるのでは
