@@ -54,6 +54,38 @@ aspectratio: 169
 
 ちゃんと変わってる
 
+## メソッドを書き換えたなら？
+
+```python
+>> Dog.greet = lambda self: print("わんわん！")
+>>> aodog.greet()
+わんわん！
+```
+
+## classをdelしたら？
+
+```python
+>>> del Dog
+>>> aodog.greet()
+わんわん！
+>>> aodog.__class__
+<class '__main__.Dog'>
+>>> Dog = aodog.__class__
+>>> Dog
+<class '__main__.Dog'>
+```
+
+## メソッドを変数に退避しておいたら？
+
+```python
+>>> g = aodog.greet
+>>> Dog.greet = lambda self: print("わんわんわん！")
+>>> g()
+わんわん！
+>>> aodog.greet()
+わんわんわん！
+```
+
 # pickleファイルを直接編集する
 
 
