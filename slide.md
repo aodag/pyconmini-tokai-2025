@@ -181,3 +181,87 @@ import a
 
 ## 代入
 ## del
+
+# なんでもキャッチ、sys.exit
+
+## sys.exit
+
+```python
+$ python
+>>> import sys
+>>> sys.exit()
+$
+```
+
+## Exceptionでキャッチできない
+
+```python
+$ python
+>>> import sys
+>>> try:
+...     sys.exit()
+... except Exception as e:
+...     print(e)
+...
+$
+```
+
+## BaseExceptionでキャッチ
+
+```python
+$ python
+>>> import sys
+>>> try:
+...     sys.exit()
+... except BaseException as e:
+...     print(type(e))
+...     print(e)
+...
+<class 'SystemExit'>
+
+>>>
+```
+
+## atexit
+
+```python
+$ python
+>>> import sys
+>>> import atexit
+>>> atexit.register(lambda: print("good-bye"))
+<function <lambda> at 0x7f003d65ab60>
+>>>
+good-bye
+```
+
+## atexitで無限ループできるか？
+
+```python
+$ python
+>>> import sys
+>>> import atexit
+>>> import time
+>>> def main():
+...     for i in range(10):
+...         print(i)
+...         time.sleep(1)
+...     sys.exit()
+...
+>>> atexit.register(main)
+<function main at 0x7f24f549a8e0>
+>>>
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Exception ignored in atexit callback <function main at 0x7f24f549a8e0>:
+Traceback (most recent call last):
+  File "<python-input-3>", line 5, in main
+SystemExit:
+```
