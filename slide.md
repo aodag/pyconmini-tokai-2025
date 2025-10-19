@@ -119,10 +119,32 @@ import a
 
 - importの事実を撤回
 
-## TODO 自身をimportしている途中でsys.moduleから削除する
+## なんとかしてみよう
 
-- 無限ループできるのでは
-- 停止条件を作れたらチャーチ数を実装できるのでは
+- sys.modulesを参照して自分を別モジュールのグローバル変数に代入
+- その後例外を投げてsys.modulesから自分を消去
+
+a.py
+```python
+x = None
+v = 0
+try:
+  import b
+except Exception as e:
+  print(f"{e=}")
+print(f"{x=}")
+```
+
+b.py
+```python
+import sys
+import a
+
+a.x = sys.modules["b"]
+a.v += 1
+print(f"{a.x=}")
+raise ValueError
+```
 
 # sys.frameを辿ってローカル変数を書き換える
 
