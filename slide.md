@@ -287,3 +287,36 @@ Traceback (most recent call last):
   File "<python-input-3>", line 5, in main
 SystemExit:
 ```
+
+# 変な変数名
+
+## オブジェクトのattr
+
+```python
+>>> class A:
+...     pass
+...
+>>> a = A()
+>>> a.a = 1
+>>> setattr(a, "b", 2)
+>>> a.b
+2
+>>> setattr(a, "(´・ω・｀)", 3)
+>>> getattr(a, "(´・ω・｀)")
+3
+>>> dir(a)
+['(´・ω・｀)', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__firstlineno__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__static_attributes__', '__str__', '__subclasshook__', '__weakref__', 'a', 'b']
+>>> vars(a)
+{'a': 1, 'b': 2, '(´・ω・｀)': 3}
+```
+
+## \_\_main\_\_
+
+```python
+>>> import sys
+>>> sys.modules["__main__"]
+<module '__main__' from '/usr/lib/python3.13/_pyrepl/__main__.py'>
+>>> setattr(sys.modules["__main__"], "a", 1)
+>>> a
+1
+```
