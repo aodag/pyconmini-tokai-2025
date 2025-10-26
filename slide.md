@@ -10,6 +10,20 @@ aspectratio: 169
 
 ## お前だれよ
 
+## ハックルベリーと黒魔術
+
+- プログラミングは楽しい！
+  - 作りたいものが動くこと
+  - 疑問を突き詰めること
+- 疑問を突き詰めるのは冒険
+  - ハックルベリー
+- 黒魔術とは違うのか
+  - 達成したいのは疑問の解消
+    - それとちょっとした冒険
+  - 黒魔術は欲望を解消する
+    - これをなんとかして動かさないと！
+- テクニックは近いかもしれない
+
 # \_\_class\_\_ を書き換える
 
 ## 2つのクラス
@@ -86,13 +100,6 @@ aspectratio: 169
 わんわんわん！
 ```
 
-# pickleファイルを直接編集する
-
-
-# 実行中にsys.pathを変更する
-
-## 同名のモジュールをimportできるか
-
 # 自身をimportする
 
 ## 自身をimportしたら無限ループになる？
@@ -119,6 +126,7 @@ import a
 
 - importの事実を撤回
 
+# モジュール外からグローバル変数を変更する
 ## なんとかしてみよう
 
 - sys.modulesを参照して自分を別モジュールのグローバル変数に代入
@@ -146,63 +154,54 @@ print(f"{a.x=}")
 raise ValueError
 ```
 
-# sys.frameを辿ってローカル変数を書き換える
+## TODO importで数を数える
 
-## 案
+## TODO generatorで無限import
 
-停止条件のフラグを外部から書き換えるとか
+## iterableなモジュール
+
+- モジュールに `__iter__` があってもiterableと解釈されない
+
+```python
+>>> import i
+>>> i.__iter__()
+<list_iterator object at 0x7f13aaae5f30>
+>>> iter(i)
+Traceback (most recent call last):
+  File "<python-input-1>", line 1, in <module>
+    iter(i)
+    ~~~~^^^
+TypeError: 'module' object is not iterable
+```
+
+## モジュールよ、お前は今からIterableになるんだよ！
+
+```python
+>>> from collections.abc import Iterable
+>>> i.__class__
+<class 'module'>
+>>> i.__class__ = Iterable
+Traceback (most recent call last):
+  File "<python-input-6>", line 1, in <module>
+    i.__class__ = Iterable
+    ^^^^^^^^^^^
+TypeError: __class__ assignment only supported for mutable types or ModuleType subclasses
+```
+
+## 強情なやつだね！
+
+- これならどうだい！？
+
+```python
+>>> class IterableModule(m, Iterable):
+...     pass
+...
+>>> i.__class__ = IterableModule
+>>> iter(i)
+<generator object Iterable.__iter__ at 0x7f4cda3c2bc0>
+``
 
 # pthハック
-
-# 名前空間パッケージと普通のパッケージを混同する
-
-# \_\_main\_\_.py をカレントディレクトリに置く
-
-## メモ
-
-あまりおもしろくないので不採用
-
-## 3.13
-3.13では塞がってるかも
-
-```python
->>> import __main__
->>> __main__
-<module '__main__' from '/usr/lib/python3.13/_pyrepl/__main__.py'>
-```
-
-## 3.12
-
-```python
->>> import __main__
->>> __main__
-<module '__main__' (<class '_frozen_importlib.BuiltinImporter'>)>
-```
-
-## 3.11
-
-```python
->>> import __main__
->>> __main__
-<module '__main__' (built-in)>
-```
-
-## 3.10以前
-
-```python
->>> import __main__
->>> __main__
-<module '__main__' (built-in)>
-```
-
-# \_\_init\_\_.py をカレントディレクトリに置く
-
-## pytestが混乱するのでは
-
-# モジュール外からグローバル変数を変更する
-
-## 代入
-## del
 
 # なんでもキャッチ、sys.exit
 
@@ -320,3 +319,11 @@ SystemExit:
 >>> a
 1
 ```
+
+# まとめ
+
+- 役に立たない
+- やってるときだけ楽しい
+  - 資料に起こしてみるとなぜこんなことを真剣にやったのだろうと思う
+- 楽しいのだからそれでいい
+- こうなるはずだというのをやってみるのは大事
