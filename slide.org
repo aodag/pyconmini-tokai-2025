@@ -1,7 +1,14 @@
 #+title: Pythonでやってはいけないやってみるべきこと
 #+subtitle: PyCon Mini 東海 2025
 #+author: Atsushi Odagiri
-#+options: H:2 ^:nil
+#+date: 2025-11-08
+#+BEAMER_THEME: Boadilla
+#+BEAMER_COLOR_THEME: seahorse
+#+OPTIONS: H:2 toc:t num:t
+#+OPTIONS: ^:{}
+#+LaTeX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [aspectratio=169]
+#+LaTeX_HEADER: \usepackage{luatexja}
 
 * COMMENT metadata
 - 20分発表
