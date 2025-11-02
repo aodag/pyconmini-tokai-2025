@@ -67,7 +67,81 @@
 
 ** TODO 自分をimportするとどうなる？
 
+- ~__main__.x~ と ~importme1.x~
 - ~sys.modules~
+
+** 自分をimportするモジュール
+
+#+begin_src python
+  #importme1.py
+  import importme1
+
+  x = 1
+  print(__name__, importme1.x)
+  x = 2
+  print(__name__, importme1.x)
+#+end_src
+
+** 自分を見つめる誰か
+
+#+begin_example
+python importme1.py
+importme1 1
+importme1 2
+__main__ 2
+__main__ 2
+#+end_example
+
+- 最初は ~__main__~ モジュールとして実行される
+- ~__main__~ から ~importme1~ をimportするのは問題なし
+- その先の ~importme1~ から ~importme1~ をimportしているのは問題ない？
+
+** 自分はもういる
+
+- ~import~ は include ではない
+- もう ~importm1~ がインタプリタ上に存在しているので、2回目以降は参照を返すだけ
+
+** ではどこにいるか
+
+- ~sys.modules~ を確認しよう
+
+#+begin_src python
+  # importme2.py
+  import sys
+  print(__name__, "いるよ！" if "importme2" in sys.modules else "いないよ！")
+  import importme2
+  print(__name__, "いるよ！" if "importme2" in sys.modules else "いないよ！")
+#+end_src
+
+** え、いつからいるの
+
+#+begin_example
+__main__ いないよ！
+importme2 いるよ！
+importme2 いるよ！
+__main__ いるよ！
+#+end_example
+
+- importしたとき、そのモジュールを実行するときにはもうモジュールがsys.modulesに登録されている
+
+** TODO 消せ！
+
+- import中にエラーが発生する
+- sys.modules から消える
+- 再度importで再評価
+
+** TODO 自己importの懸念
+
+- 無限ループしない？
+  - import時にもうインタプリタにいてそれ以上ロードされないから大丈夫！
+- でもエラーがおきたらsys.modulesから消えるよね
+  - Σ
+
+** TODO 私は誰
+
+** TODO 私のことを覚えておいて
+
+- エラー前に自分のモジュールを別のモジュールに代入しておく
 
 * explore frames 見てはいけない
 
