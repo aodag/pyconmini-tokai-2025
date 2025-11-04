@@ -153,11 +153,36 @@ __main__ いるよ！
 ** レキシカルスコープとダイナミックスコープ
 
 - その変数はどこの値を見るのか
+#+begin_src python
+  x = 1
+  def f1():
+      x = 2
+      def f2():
+          print(f"{x=}")
+  def f3():
+      x = 3
+      f1()()
+#+end_src
 
-
-** 実行時の状態
+** 呼び出し側の変数を見る
 
 - ~sys._getframe~
+#+begin_src python
+  x = 1
+  def f1():
+      x = 2
+      def f2():
+          x = sys._getframe(1).f_globals["x"]
+          print(f"{x=}")
+  def f3():
+      x = 3
+      f1()()
+#+end_src
+
+
+* pth hack 黒魔術はあなたのそばに
+
+* 黒魔術について
 
 ** 役に立ちそうな気がする？
 
