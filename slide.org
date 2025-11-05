@@ -153,12 +153,12 @@ __main__ いるよ！
   Traceback (most recent call last):
     File "<python-input-2>", line 1, in <module>
       import importme3
-    File "/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py", line 4, in <module>
+    File ".../importme3.py", line 4, in <module>
       raise Exception()
   Exception
   >>> import ximportme3
   >>> ximportme3
-  <module 'importme3' from '/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py'>
+  <module 'importme3' from '.../importme3.py'>
 #+end_src
 - エラー前に自分のモジュールを別のモジュールに代入しておく
 
@@ -171,7 +171,7 @@ __main__ いるよ！
   Traceback (most recent call last):
     File "<python-input-12>", line 1, in <module>
       import importme3
-    File "/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py", line 4, in <module>
+    File ".../importme3.py", line 4, in <module>
       raise Exception()
   Exception
   >>> sys.modules["ximportme3"] == ximportme3
@@ -179,34 +179,117 @@ __main__ いるよ！
 #+end_src
 
 - 再度import実行するとsys.modulesに別のインスタンスとして登録される
+
 ** 無限ループできるか？
 
 - 無限ループといえばgenerator
 
-** モジュールよ、お前はnextになれ
+** モジュールよ、お前はiterableになれ
 
-- ~__next__~ を定義するだけではだめ
+#+begin_src python
+  # iterable_module.py
+  def __iter__():
+      yield 1
+      yield 2
+#+end_src
 
-** TODO モジュールよ、nextになるのを拒むな
+** ならない
+
+#+begin_src python
+  >>> iter(iterable_module)
+  Traceback (most recent call last):
+    File "<python-input-1>", line 1, in <module>
+      iter(iterable_module)
+      ~~~~^^^^^^^^^^^^^^^^^
+  TypeError: 'module' object is not iterable
+#+end_src
+
+- ~__iter__~ を定義するだけではだめ
+
+** TODO モジュールよ、iterableになるのを拒むな
 
 - ~ModuleType~, ~Iterable~ を多重継承したclass
 - ~__class__~ を書き換えるのはできたな！
 
 #+begin_src python
+  import sys
+  from collections.abc import Iterable
+  from types import ModuleType
+
   class IterableModule(ModuleType, Iterable):
-      pass
+
+      def __iter__(self):
+          yield 1
+          yield 2
+
+  sys.modules[__name__].__class__ = IterableModule
 #+end_src
 
-** TODO iter でジェネレーター
+** iterableなモジュール
 
-- generatorはiteratorでもある
+- importして即forループ
+
+#+begin_src python
+  >>> import iterable_module
+  >>> for i in iterable_module:
+  ...     print(i)
+  ...
+  1
+  2
+#+end_src
 
 ** TODO yield from で再帰ジェネレーター
 
 - ジェネレーターの先でさらにimportトリック
 - ~__class__~ の書き換えも忘れずに
 
-** TODO 無限ループって怖くね
+#+begin_src python
+  class IterableModule(ModuleType, Iterable):
+
+      def __iter__(self):
+          n = __import__(__name__ + "$")
+          yield self
+          yield from n
+
+  self = sys.modules[__name__]
+  self.__class__ = IterableModule
+  sys.modules[__name__ + "$"] = self
+  raise Exception()
+#+end_src
+
+
+** 永遠なれ！
+#+begin_src python
+  >>> import iteratable_module
+  Traceback (most recent call last):
+    File "<python-input-3>", line 1, in <module>
+      import iterable_module
+    File ".../iterable_module.py", line 15, in <module>
+      raise Exception()
+  Exception
+  >>> iterable_module = __import__("iterable_module$")
+  >>> for i in iterable_module:
+  ...     print(id(i), i)
+#+end_src
+
+** 無限ループって怖くね
+
+#+begin_src python
+  139818183224400 <module 'iterable_module' from '.../iterable_module.py'>
+  139818183224400 <module 'iterable_module' from '.../iterable_module.py'>
+    ...
+  139818183224400 <module 'iterable_module' from '.../iterable_module.py'>
+  139818183224400 <module 'iterable_module' from '.../iterable_module.py'>
+  Traceback (most recent call last):
+    File "<python-input-2>", line 1, in <module>
+      for i in iterable_module:
+               ^^^^^^^^^^^^^^^
+    ...
+    File ".../iterable_module.py", line 10, in __iter__
+      yield from n
+    [Previous line repeated 988 more times]
+  RecursionError: maximum recursion depth exceeded
+#+end_src
 
 ** TODO 最初のimportするのをどこでやるか
 
