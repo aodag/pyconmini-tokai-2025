@@ -137,11 +137,80 @@ __main__ いるよ！
 - でもエラーがおきたらsys.modulesから消えるよね
   - Σ
 
-** TODO 私は誰
-
 ** TODO 私のことを覚えておいて
 
+#+begin_src python
+  # importme3.py
+  import sys
+  sys.modules["ximportme3"] = sys.modules[__name__]
+  raise Exception()
+#+end_src
+
+** TODO そこに私はいます
+
+#+begin_src python
+  >>> import importme3
+  Traceback (most recent call last):
+    File "<python-input-2>", line 1, in <module>
+      import importme3
+    File "/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py", line 4, in <module>
+      raise Exception()
+  Exception
+  >>> import ximportme3
+  >>> ximportme3
+  <module 'importme3' from '/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py'>
+#+end_src
 - エラー前に自分のモジュールを別のモジュールに代入しておく
+
+** 私は誰
+
+#+begin_src python
+  >>> sys.modules["ximportme3"] == ximportme3
+  True
+  >>> import importme3
+  Traceback (most recent call last):
+    File "<python-input-12>", line 1, in <module>
+      import importme3
+    File "/home/aodag/ghq/github.com/aodag/pyconmini-tokai-2025/importme3.py", line 4, in <module>
+      raise Exception()
+  Exception
+  >>> sys.modules["ximportme3"] == ximportme3
+  False
+#+end_src
+
+- 再度import実行するとsys.modulesに別のインスタンスとして登録される
+** 無限ループできるか？
+
+- 無限ループといえばgenerator
+
+** モジュールよ、お前はnextになれ
+
+- ~__next__~ を定義するだけではだめ
+
+** TODO モジュールよ、nextになるのを拒むな
+
+- ~ModuleType~, ~Iterable~ を多重継承したclass
+- ~__class__~ を書き換えるのはできたな！
+
+#+begin_src python
+  class IterableModule(ModuleType, Iterable):
+      pass
+#+end_src
+
+** TODO iter でジェネレーター
+
+- generatorはiteratorでもある
+
+** TODO yield from で再帰ジェネレーター
+
+- ジェネレーターの先でさらにimportトリック
+- ~__class__~ の書き換えも忘れずに
+
+** TODO 無限ループって怖くね
+
+** TODO 最初のimportするのをどこでやるか
+
+- pthハック
 
 * explore frames 見てはいけない
 
