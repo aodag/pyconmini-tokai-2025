@@ -291,20 +291,13 @@ __main__ いるよ！
   RecursionError: maximum recursion depth exceeded
 #+end_src
 
-** TODO 最初のimportするのをどこでやるか
-
-- pthハック
-
 * explore frames 見てはいけない
-
-** TODO クロージャー(レキシカルスコープ)は便利だけど
-
-- でも！呼び出し元の状況を知りたい！
-
 
 ** レキシカルスコープとダイナミックスコープ
 
 - その変数はどこの値を見るのか
+- でも！呼び出し元の状況を知りたい！
+
 #+begin_src python
   x = 1
   def f1():
@@ -332,15 +325,94 @@ __main__ いるよ！
 #+end_src
 
 
-* pth hack 黒魔術はあなたのそばに
+* COMMENT 入り切らない
 
-* 黒魔術について
+# 置いてはいけないものを置く
+- `__main__.py`
+- 危険な便利さとは
+- `__init__.py`
 
-** 役に立ちそうな気がする？
+* 見てはいけないものを見る
 
-- それこそが黒魔術への扉を開く一歩目なのです
+** double undersocre name mangling
+
+#+begin_src python
+  >>> class F:
+  ...     def __init__(self):
+  ...         self.__x = 1
+  ...
+  >>> f = F()
+  >>> f.__x
+  Traceback (most recent call last):
+    File "<python-input-7>", line 1, in <module>
+      f.__x
+  AttributeError: 'F' object has no attribute '__x'
+  >>> dir(f)
+  ['_F__x', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__firstlineno__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__static_attributes__', '__str__', '__subclasshook__', '__weakref__']
+  >>> f._F__x
+  1
+#+end_src
+
+** 見える
+
+- _{クラス名}__x のようにクラス名を追加するだけなので簡単に見える
+- double undersocre name mangling は private にするためではない
+- 親クラスと子クラスで名前の衝突を避けるためのもの
+
+** 見えないようにする
+
+- クロージャーの中でクラス定義すると？
+
+#+begin_src python
+  >>> def F():
+  ...     class F:
+  ...         def m(self):
+  ...             return x
+  ...     x = 1
+  ...     return F()
+  ...
+  >>> f = F()
+  >>> f.m()
+  1
+  >>> dir(f)
+  ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__firstlineno__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__static_attributes__', '__str__', '__subclasshook__', '__weakref__', 'm']
+#+end_src
+** 見えないな！
+- そもそもオブジェクトの属性ではない
+- クラスの属性でもない
+- クロージャーの中で変数としてしか存在してない
+
+#+begin_src python
+  >>> f.x
+  Traceback (most recent call last):
+    File "<python-input-19>", line 1, in <module>
+      f.x
+  AttributeError: 'F' object has no attribute 'x'
+  >>> F.x
+  Traceback (most recent call last):
+    File "<python-input-23>", line 1, in <module>
+      F.x
+  AttributeError: 'function' object has no attribute 'x'
+#+end_src
+
+** 見えないものを見る
+
+- inspectモジュールで奥深くまで！
+- getclosurevarsを使えばクロージャーにバインドされている変数も見える
+
+#+begin_src python
+  >>> inspect.getclosurevars(f.m).nonlocals["x"]
+  1
+#+end_src
 
 * おわりに
+
+** やってみるべきこと
+
+- ふとした疑問を試してみる
+- さらに疑問を投げかける
+- 黒魔術との境に気をつける
+- 黒魔術に気づく
 
 ** 参考文献
 
