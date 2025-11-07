@@ -17,11 +17,16 @@
   - タイトルだけのスライドもあるから45くらいまでは許容
   
 * はじめに
-** お前誰よ [0/1]
+** お前誰よ
 - Atsushi Odagiri
 - aodag
 - 株式会社オープンコレクター
-- [ ] 画像入れる
+
+#+ATTR_LATEX: :width 2cm
+[[./r-penta512.png]]
+
+#+ATTR_LATEX: :width 2cm
+[[./oc-logo.png]]
 
 * やってみるべきやってはいけないこと
 
@@ -294,7 +299,7 @@ __main__ いるよ！
   2
 #+end_src
 
-** TODO yield from で再帰ジェネレーター
+** yield from で再帰ジェネレーター
 
 - ジェネレーターの先でさらにimportトリック
 - ~__class__~ の書き換えも忘れずに
