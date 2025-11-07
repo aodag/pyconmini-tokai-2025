@@ -47,11 +47,13 @@
 - もっとめちゃくちゃやってもいい
 - 悪いことしよう
 
-* become anther class なりたい自分
+* 違う自分になる
 
 ** 吾輩は猫である
 
-#+begin_src python :results output :exports both
+- オブジェクト指向の入門によくあるやつ
+
+#+begin_src python 
   >>> class Cat:
   ...     def greet(self):
   ...         print("にゃん")
@@ -61,14 +63,11 @@
   にゃん
 #+end_src
 
-#+RESULTS:
-: にゃん
-
 ** いや、猫じゃなかった
 
 - ~__class__~ を変えてみよう
 
-#+begin_src python :results output :exports both
+#+begin_src python 
   >>> class Dog:
   ...     def greet(self):
   ...         print("わん")
@@ -91,7 +90,8 @@
 
 ** でも覚えているよ
 
-- 以前のクラスでのバウンドメソッド
+- 以前のクラスでのバウンドメソッドを参照
+
 #+begin_src python
   >>> cat = Cat()
   >>> cat_greet = cat.greet
@@ -102,14 +102,11 @@
   にゃん
 #+end_src
 
-* 自己import 頼れるのは自分だけ
+* 頼れるのは自分だけ
 
-** TODO 自分をimportするとどうなる？
+** 自分を見つめ直す
 
-- ~__main__.x~ と ~importme1.x~
-- ~sys.modules~
-
-** 自分をimportするモジュール
+- 自分をimportするモジュール
 
 #+begin_src python
   #importme1.py
@@ -121,8 +118,8 @@
   print(__name__, importme1.x)
 #+end_src
 
-** 自分を見つめる誰か
-
+** 実行しよう
+  
 #+begin_example
 python importme1.py
 importme1 1
@@ -135,12 +132,12 @@ __main__ 2
 - ~__main__~ から ~importme1~ をimportするのは問題なし
 - その先の ~importme1~ から ~importme1~ をimportしているのは問題ない？
 
-** 自分はもういる
+** え、どういうこと
 
 - ~import~ は include ではない
 - もう ~importm1~ がインタプリタ上に存在しているので、2回目以降は参照を返すだけ
 
-** ではどこにいるか
+** ではどこにいるか！ここにいるぞ！
 
 - ~sys.modules~ を確認しよう
 
@@ -161,22 +158,13 @@ importme2 いるよ！
 __main__ いるよ！
 #+end_example
 
-- importしたとき、そのモジュールを実行するときにはもうモジュールがsys.modulesに登録されている
-
-** TODO 消せ！
-
-- import中にエラーが発生する
-- sys.modules から消える
-- 再度importで再評価
-
-** TODO 自己importの懸念
-
+- importしてそのモジュールを実行するときにはもうモジュールがsys.modulesに登録されている
 - 無限ループしない？
   - import時にもうインタプリタにいてそれ以上ロードされないから大丈夫！
 - でもエラーがおきたらsys.modulesから消えるよね
   - Σ
 
-** TODO 私のことを覚えておいて
+** 私のことを覚えておいて
 
 #+begin_src python
   # importme3.py
@@ -185,7 +173,11 @@ __main__ いるよ！
   raise Exception()
 #+end_src
 
-** TODO そこに私はいます
+- import中にエラーが発生する
+- sys.modules から消える
+- その前に別名でsys.modulesに退避しておく
+
+** そこに私はいます
 
 #+begin_src python
   >>> import importme3
@@ -199,9 +191,12 @@ __main__ いるよ！
   >>> ximportme3
   <module 'importme3' from '.../importme3.py'>
 #+end_src
-- エラー前に自分のモジュールを別のモジュールに代入しておく
 
-** 私は誰
+- sys.modules にすでに存在している
+- importしてもsys.moduleの参照を返すだけ
+- ximportme3.py がなくてもエラーにならない
+
+** 世の中に似ている人は3人いる
 
 #+begin_src python
   >>> sys.modules["ximportme3"] == ximportme3
@@ -217,11 +212,10 @@ __main__ いるよ！
   False
 #+end_src
 
-- 再度import実行するとsys.modulesに別のインスタンスとして登録される
+- 再度import実行するとsys.modulesに別のモジュールインスタンスとして登録される
 
-** 無限ループできるか？
 
-- 無限ループといえばgenerator
+* 振り回す
 
 ** モジュールよ、お前はiterableになれ
 
@@ -231,6 +225,8 @@ __main__ いるよ！
       yield 1
       yield 2
 #+end_src
+
+- モジュールに直接 ~__iter__~ 関数を定義したらそのモジュールはiterableなのでしょうか？
 
 ** ならない
 
@@ -245,10 +241,31 @@ __main__ いるよ！
 
 - ~__iter__~ を定義するだけではだめ
 
-** TODO モジュールよ、iterableになるのを拒むな
+** Iterableになれるかな？
+
+- さあお前は今から ~Iterable~ になるんだよ！
+
+#+begin_src python
+  # be_iterable.py
+  import sys
+  from collections.abc import Iterable
+  sys.modules[__name__].__class__ = Iterable
+#+end_src
+
+- 実行してみると
+
+#+begin_src shell
+  $ python be_iterable.py
+  Traceback (most recent call last):
+    File ".../be_iterable.py", line 4, in <module>
+      sys.modules[__name__].__class__ = Iterable
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  TypeError: __class__ assignment only supported for mutable types or ModuleType subclasses
+#+end_src
+** モジュールよ、iterableになるのを拒むな
 
 - ~ModuleType~, ~Iterable~ を多重継承したclass
-- ~__class__~ を書き換えるのはできたな！
+- ~__class__~ を書き換える？さっきやったな！
 
 #+begin_src python
   import sys
