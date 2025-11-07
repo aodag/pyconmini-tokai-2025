@@ -17,17 +17,13 @@
   - タイトルだけのスライドもあるから45くらいまでは許容
   
 * はじめに
-** TODO お前誰よ
+** お前誰よ [0/1]
 - Atsushi Odagiri
 - aodag
 - 株式会社オープンコレクター
+- [ ] 画像入れる
 
-** TODO 今日のお話
-
-- ダイナミックで...フェティッシュ...ではない...
-- 危険で冒険的なプログラミング
-
-* ハックルベリーと黒魔術
+* やってみるべきやってはいけないこと
 
 ** お仕事とプログラミング
 
@@ -51,17 +47,60 @@
 - もっとめちゃくちゃやってもいい
 - 悪いことしよう
 
-** TODO 冒険が黒魔術になるとき
-
-- 追い詰められて手を出してしまう
-- 危険に見えないようにごまかす
-
 * become anther class なりたい自分
 
-** TODO class への代入
+** 吾輩は猫である
 
-- 冒険は変化を与えてくれる
+#+begin_src python :results output :exports both
+  >>> class Cat:
+  ...     def greet(self):
+  ...         print("にゃん")
+  ...         
+  >>> cat = Cat()
+  >>> cat.greet()
+  にゃん
+#+end_src
+
+#+RESULTS:
+: にゃん
+
+** いや、猫じゃなかった
+
 - ~__class__~ を変えてみよう
+
+#+begin_src python :results output :exports both
+  >>> class Dog:
+  ...     def greet(self):
+  ...         print("わん")
+  ...         
+  >>> cat.__class__ = Dog
+  >>> cat.greet()
+  わん
+#+end_src
+
+** お前、変わったよな
+
+- ~isinstance~ もそう言ってる
+
+#+begin_src python
+  >>> isinstance(cat, Cat)
+  False
+  >>> isinstance(cat, Dog)
+  True
+#+end_src
+
+** でも覚えているよ
+
+- 以前のクラスでのバウンドメソッド
+#+begin_src python
+  >>> cat = Cat()
+  >>> cat_greet = cat.greet
+  >>> cat.__class__ = Dog
+  >>> cat.greet()
+  わん
+  >>> cat_greet()
+  にゃん
+#+end_src
 
 * 自己import 頼れるのは自分だけ
 
@@ -404,6 +443,11 @@ __main__ いるよ！
   >>> inspect.getclosurevars(f.m).nonlocals["x"]
   1
 #+end_src
+** 冒険が黒魔術になるとき
+
+- 追い詰められて手を出してしまう
+- 危険に見えないようにごまかす
+
 
 * おわりに
 
@@ -414,7 +458,14 @@ __main__ いるよ！
 - 黒魔術との境に気をつける
 - 黒魔術に気づく
 
+** やってはいけないこと
+
+- 試したことをそのまま公の場に出す
+- 武勇伝
+  - 今やってるじゃないか
+
 ** 参考文献
 
 - Python 3.14.0 documentation
+  - Library
   - Language Reference
