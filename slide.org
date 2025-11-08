@@ -21,6 +21,8 @@
 - Atsushi Odagiri
 - aodag
 - 株式会社オープンコレクター
+- Python歴
+  - 1.5くらいから
 
 #+ATTR_LATEX: :width 2cm
 [[./r-penta512.png]]
@@ -40,9 +42,11 @@
 
 ** 安全で窮屈
 
-- 助けてくれるツールたち！
+- ご安全に！
+- いろいろチェックするツールたち！
   - mypy, ruff, pyright ...
 - お前らに何がわかるってんだよ！
+  - 安全を強いられている
 
 ** 危険と冒険的なプログラミング
 
@@ -53,6 +57,8 @@
 - 悪いことしよう
 
 * 違う自分になる
+
+** 違う自分になる
 
 ** 吾輩は猫である
 
@@ -108,6 +114,8 @@
 #+end_src
 
 * 頼れるのは自分だけ
+
+** 頼れるのは自分だけ
 
 ** 自分を見つめ直す
 
@@ -222,6 +230,8 @@ __main__ いるよ！
 
 * 振り回す
 
+** 振り回す
+
 ** モジュールよ、お前はiterableになれ
 
 #+begin_src python
@@ -260,12 +270,13 @@ __main__ いるよ！
 - 実行してみると
 
 #+begin_src shell
-  $ python be_iterable.py
-  Traceback (most recent call last):
-    File ".../be_iterable.py", line 4, in <module>
-      sys.modules[__name__].__class__ = Iterable
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  TypeError: __class__ assignment only supported for mutable types or ModuleType subclasses
+   $ python be_iterable.py
+   Traceback (most recent call last):
+     File ".../be_iterable.py", line 4, in <module>
+       sys.modules[__name__].__class__ = Iterable
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   TypeError: __class__ assignment only supported for
+     mutable types or ModuleType subclasses
 #+end_src
 ** モジュールよ、iterableになるのを拒むな
 
@@ -352,7 +363,7 @@ __main__ いるよ！
   RecursionError: maximum recursion depth exceeded
 #+end_src
 
-* explore frames 見てはいけない
+* COMMENT explore frames 見てはいけない
 
 ** レキシカルスコープとダイナミックスコープ
 
@@ -394,6 +405,8 @@ __main__ いるよ！
 - `__init__.py`
 
 * 見てはいけないものを見る
+
+** 見てはいけないものを見る
 
 ** double undersocre name mangling
 
@@ -465,6 +478,11 @@ __main__ いるよ！
   >>> inspect.getclosurevars(f.m).nonlocals["x"]
   1
 #+end_src
+
+* 冒険を終える
+
+** 冒険を終える
+
 ** 冒険が黒魔術になるとき
 
 - 追い詰められて手を出してしまう
@@ -472,6 +490,8 @@ __main__ いるよ！
 
 
 * おわりに
+
+** おわりに
 
 ** やってみるべきこと
 
